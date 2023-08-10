@@ -1,15 +1,12 @@
 # Pileup-Ct-Value-Prediction
-This repository contains scripts to train and score a Random Forest regression model to predict the Ct values as a proxy for viral load of input genome data from pileup files. It contains the following Python scripts:
+This repository contains scripts to train and score a Random Forest regression model to predict the Ct values as a proxy for viral load of input SARS-CoV-2 genome data from pileup files. For more detail on the pileup format [go here](https://en.wikipedia.org/wiki/Pileup_format)
+This repo contains the following Python scripts:
 * *parsePileups.py* - parsing all pileup files in a directory and storing the parsed results as lists
-* *createMat.py* - appending the pileup lists created by *parsePileups.py* to create and store a matrix representing all pileup files
-* *trainModel.py" - training a model on the pileup matrix created by *createMat.py* and evaluating its accuracy using R2 score and RMSE across 5 fold cross validation
-* *predictCt.py* - parse an inputted pileup file and use the model created by *trainModel.py* to predict its Ct value 
+* *createMat.py* - concatenating the pileup lists created by *parsePileups.py* to create and store a matrix representing all pileup files
+* *trainModel.py* - training a model on the pileup matrix created by *createMat.py* and evaluating its accuracy using R2 score and RMSE across 5 fold cross validation
+* *predictCt.py* - parsing an inputted pileup file and using the model created by *trainModel.py* to predict its Ct value 
 
-This repo also includes the sample directory containing the metadata file and model for testing and running the scripts.
-
-
-.......TODO - mention what pileups are and a wikipedia link?
-
+This repo also includes the *'sample'* directory containing the metadata file and model for testing and running the scripts.
 
 ## Requirements
 In order to run the scripts:
