@@ -12,7 +12,7 @@ This repo also includes the *'sample'* directory containing the metadata file an
 
 ## Requirements
 ### 1. Python Packages
-This repo is designed to be run with python3 (version 3.9.12) and Anaconda version 2022.05. 
+This repo is designed to be run with python3 (version 3.9.12) and Anaconda version 2022.05.   
 This repo requires the following packages to be installed:
 * numpy (version 1.21.5)
 * pandas (version 1.4.2)
