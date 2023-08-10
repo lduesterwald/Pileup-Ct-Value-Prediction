@@ -1,4 +1,4 @@
-# Pileup-Ct-Value-Prediction
+# Pileup Ct-Value-Prediction
 This repository contains scripts to train and score a Random Forest regression model to predict the Ct values as a proxy for viral load of input SARS-CoV-2 genome data from pileup files. For more detail on the pileup format [go here](https://en.wikipedia.org/wiki/Pileup_format)
 This repo contains the following Python scripts:
 * *parsePileups.py* - parsing all pileup files in a directory and storing the parsed results as lists
@@ -8,36 +8,20 @@ This repo contains the following Python scripts:
 
 This repo also includes the *'sample'* directory containing the metadata file and model for testing and running the scripts.
 
+
+
 ## Requirements
-In order to run the scripts:
-1. Python and the required libraries must be installed
-2. A directory containing genome data as *.gz* or *.pileup* pileup files for the model training must be available
-
-### 1. Installing gzip TODO? and Anaconda? - do I need instructions for that
-
-
-### 2. Python Packages
-This repo is designed to be run with python3 (version 3.9.12) and Anaconda version TODO:
-
-# Name                    Version                   Build  Channel
-anaconda                  2022.05                  py39_0  
-anaconda-client           1.9.0            py39h06a4308_0  
-anaconda-navigator        2.1.4            py39h06a4308_0  
-anaconda-project          0.10.2             pyhd3eb1b0_0  
-
-conda -V
-conda 4.12.0
-
-
+### 1. Python Packages
+This repo is designed to be run with python3 (version 3.9.12) and Anaconda version 4.12.0.  
 This repo requires the following packages to be installed:
 * numpy (version 1.21.5)
 * pandas (version 1.4.2)
 * sklearn (version 1.0.2)
 
-## 3. Genome Data Directory
-This repo requires a directory containing genome data as pileup files. The name of the directory can be passed into the scripts (option -p). The pileup  files should have *.gz* or *.pileup* extension and be named <genome_id>.gz or <genome_id>.pileup.
+### 2. Genome Data Directory
+This repo requires a directory containing genome data as pileup files. The name of the directory can be passed into the scripts (option -p). The pileup  files should have *.gz* or *.pileup* extension and be named \<genome_id>.gz or \<genome_id>.pileup.
 
-One script in this repo (*parsePileups.py*) also requires a comma-separated (*.csv*) metadata file with information about each genome. This file should contain at least the genome_id (corresponding to the file names) and Ct value for each pileup file. The column titles in the metadata file should be "ID" and "Ct Value" for the genome IDs and Ct values. If the file includes additional columns, they will be ignored by the scripts. The path to this file must be passed into the script (option -d). 
+The script *parsePileups.py* also requires a comma-separated (*.csv*) metadata file with information about each genome. This file should contain at least the genome_id (corresponding to the file names) and Ct value for each pileup file. The column titles in the metadata file should be "ID" and "Ct Value" for the genome IDs and Ct values. If the file includes additional columns, they will be ignored by the scripts. The path to this file must be passed into the script (option -d). 
 
 The column titles in the metadata file should be formatted in the same was as the example metadata file provided in */sample/metadata_file.csv*.
 
@@ -52,41 +36,41 @@ The scripts in this repo implement a pipeline and should be run in the following
 This repo also contains the *ct_value_prediction.sh.sh* bash script to run the entire pipeline.
 
 ### *parsePileups.py*
-The *parsePileups.py* script is used to parse the read results of every *.gz* or *.pileup* pileup file in the pileup directory and to store the outputted lists in a specified output directory.
-TODO (wording): This script has a long runtime with a large number of pileup files. We recommend splitting your pileup directory into several smaller directories and running the script with each directory simultaneously.
+The *parsePileups.py* script is used to parse the pileup read results of every *.gz* or *.pileup* pileup file in the pileup directory and to store the output lists in a specified output directory. 
+For efficient execution with a large number of pileup files, we recommend splitting the pileup directory into several sub directories and running the script concurrently across the sub directories.
 
 An example run would be:
 ~~~
-python3 parsePileups.py -p <pileup directory> -l <directory for pileup lists> -m <path to metadata file>
+python3 parsePileups.py -p <pileup_directory> -l <pileup_list_directory> -m <metadata_file_path>
 ~~~
 
 This script takes in the following options:
-* -p --pileups_dir: Specify the directory containing the *.gz* or *.pileup* pileup files to parse. The default is the directory from which the script is run
+* -p --pileups_dir: Specify the directory containing the *.gz* or *.pileup* pileup files to parse. The default is './'  
 * -l --lists_dir: Specify the directory to which to store the lists created by the script. The default is './pileup_lists/'. If the directory does not already exist, it will be created by the script.
 * -d --metadata_path: Specify the path to the comma-separated (*.csv*) metadata file containing the genome_id and Ct value of each pileup file in the pileup directory. There is no default for this option.
 
 
 ### *createMat.py*
-The *createMat.py* script is used to create and store the pileup matrix used to train the model as a numpy array. The matrix represents the features consisting of the frequency of: the A, C, T, and G bases, and insertion or deletion, for every nucleotide position in the genomes. Every row represents one genome. The script also creates 3 metadata lists to record the order of the genome IDs, Ct values, and testing instruments corresponding the order of the rows in the matrix. #TODO (wording) mention the masked positions. The script is designed to mask nucleotide positions we found to have low depth read results. These correspond to the first and last 100 nucleotides and positions 22029-22033, 22340-22367, 22897, 22899-22905, and 23108-23122. 
+The *createMat.py* script is used to create and store the pileup matrix used to train the model. The matrix represents the features consisting of the frequency of: A, C, T, and G bases, and insertion or deletion, for every nucleotide position in the genomes. Every row represents one genome. The script also creates 2 metadata lists to record the order of the genome IDs and Ct values according to the order of the rows in the matrix.
 
 An example run would be:
 ~~~
-python3 createMat.py -l <directory for pileup lists> -o <output_directory>
+python3 createMat.py -l <pileup_list_directory> -o <output_directory>
 ~~~
 
 The script takes in the following options:
 * -l --lists_dir: Specify the directory containing the parsed pileup lists to make the matrix. This should be the same directory used for *parsePileups.py*. The default is './pileup_lists/'
 * -o --out_dir:  Specify the directory in which to store the outputs created by this script. The default is './output'. If the output directory does not already exist, it will be created by the script.
-* -m --mat_name: Specify the name that the pileup matrix created by the script will be stored as. The default is 'pileup_matrix.npy'. The matrix will be stored in the output directory.
+* -m --mat_name: Specify the name that the pileup matrix created by the script will be stored as. The default is 'pileup_matrix.npy'. The matrix will be stored as a numpy array in the output directory.
 * -c --ct_name: Specify the name that the ordered list of Ct values created by the script will be stored as. The default is 'pileup_cts.pkl'. This list will be stored in the output directory
 
 
 ### *trainModel.py*
-The *trainModel.py* script is used to train a model on the pileup matrix created by *createMat.py* and evaluate it's accuracy across 5 folds. The accuracy is evaluated on two metrics: the R2 score and RMSE and the average across 5 folds with 95% confidence intervals is calculated and written to an output file. The script also stores the model trained in the first fold.
+The *trainModel.py* script is used to train a model on the pileup matrix created by *createMat.py* and evaluate its accuracy across 5 folds. The accuracy is evaluated using two metrics: the R2 score and RMSE. The average accuracy across 5 folds with 95% confidence intervals is calculated and written to an output file. The script also stores the model trained in the first fold.
 
 An example run would be:
 ~~~
-python3 trainModel.py 
+python3 trainModel.py -o <output_directory>
 ~~~
 
 The script takes in the following options:
@@ -121,7 +105,7 @@ The *predictCt.py* script takes in one *.gz* or *.pileup* pileup file and predic
 
 An example run would be:
 ~~~
-python3 predictCt.py -i <path to pileup file> 
+python3 predictCt.py -i <pileup_file_path> 
 ~~~
 
 The script takes in the following options:
@@ -137,6 +121,5 @@ The *ct_value_prediction.sh* script runs all 4 scripts in a sequence. This scrip
 
 An example run would be:
 ~~~
-bash ct_value_prediction.sh -p <pileup directory> -d <path to metadata file>  -i <path to pileup file to predict Ct>
+bash ct_value_prediction.sh -p <pileup_directory> -d <metadata_file_path>  -i <pileup_file_path>
 ~~~
-
