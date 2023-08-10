@@ -109,7 +109,7 @@ python3 predictCt.py -i <pileup_file_path>
 ~~~
 
 The script takes in the following options:
-* - --pileup_path: Specify the path to the pileup file to predict the Ct value of. There is no default for this option.
+* -i --pileup_path: Specify the path to the pileup file to predict the Ct value of. This should be a *.gz* or *.pileup* file. There is no default for this option.
 * -t --tmp_dir: Specify the temporary directory to be created by the script in order to parse the pileup file. This directory will be removed later so it must not exist when the script is called. The default is “./tmp”.
 * -o --out_dir:  Specify the directory in which the matrix and model are stored. This should be the same directory used for *createMat.py* and *trainModel.py*. The default is './output'. 
 * -m --mat_name: Specify the path to the matrix created by *createMat.py* that the model was trained on. This should be the same as used for *createMat.py* and *trainModel.py*. The default is 'pileup_matrix.npy'
