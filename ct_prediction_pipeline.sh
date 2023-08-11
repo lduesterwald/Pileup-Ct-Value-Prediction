@@ -1,3 +1,4 @@
+peline.sh
 #!/bin/bash
 # runs the Ct value prediction script pipeline
 
@@ -60,7 +61,7 @@ if ! [ -z "$pileups_dir" ]; then c1+=" -p $pileups_dir"; fi
 if ! [ -z "$lists_dir" ]; then c1+=" -l $lists_dir"; c2+=" -l $lists_dir"; fi
 c1+=" -d $metadata_path"
 if ! [ -z "$out_dir" ]; then c2+=" -o $out_dir"; c3+=" -o $out_dir"; c4+=" -o $out_dir"; fi
-if ! [ -z "$mat_name" ]; then c2+=" -m $mat_name"; c3+=" -m $mat_name"; c4+=" -m $mat_name"; fi
+if ! [ -z "$mat_name" ]; then c2+=" -m $mat_name"; c3+=" -m $mat_name"; fi
 if ! [ -z "$ct_name" ]; then c2+=" -c $ct_name"; c3+=" -c $ct_name"; fi
 if ! [ -z "$out_file" ]; then c3+=" -f $out_file"; fi
 if ! [ -z "$model_name" ]; then c3+=" -n $model_name"; c4+=" -n $model_name"; fi
@@ -98,3 +99,4 @@ else
     s+="$out_dir"
 fi
 echo "$s"
+

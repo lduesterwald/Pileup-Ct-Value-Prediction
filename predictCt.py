@@ -11,15 +11,13 @@ import numpy as np
 # returns:
 #   pileups_path: the path to the pileup file to predict the Ct value of
 #   tmp_dir: the path to the temporary directory to be created by the script
-#   mat_name: the path to the matrix created by createMat.py that the model was trained on
 #   model_name: the path to the pileup model to use to predict the Ct value
 def parseParams(args, start_dir):
     # required parameter:
     pileup_path = "" # (-i)
     # setting default values for each parameter:
-    tmp_dir = start_dir + "/tmp" # (-t)
+    tmp_dir = start_dir + "/tmp/" # (-t)
     out_dir = start_dir + "/output/" # (-o) # the ouput directoru containing the matrix and model
-    mat_name = out_dir + "pileup_matrix.npy" # (-m)
     model_name = out_dir + "pileup_model.pkl" # (-n)
 
     for i in range(len(args)):
@@ -32,14 +30,14 @@ def parseParams(args, start_dir):
             pileup_path = args[i + 1]
         elif (args[i] == "-t" or args[i] == "--tmp_dir"):
             tmp_dir = args[i + 1]
+            if (tmp_dir.endswith("/") == False):
+                tmp_dir+="/"
         elif (args[i] == "-o" or args[i] == "--out_dir"):
             out_dir = args[i + 1]
             if (out_dir.endswith("/") == False):
                 out_dir = out_dir + "/"
             mat_path = out_dir + "pileup_matrix.npy"
             model_path = out_dir + "pileup_model.pkl"
-        elif (args[i] == "-m" or args[i] == "--mat_name"):
-            mat_name = out_dir + args[i + 1]
         elif (args[i] == "-n" or args[i] == "--model_name"):
             model_name = out_dir + args[i + 1]
 
@@ -54,13 +52,12 @@ def parseParams(args, start_dir):
         print("Error: tmp_dir (-t) already exists")
         sys.exit()
 
-    return pileup_path, tmp_dir, mat_name, model_name
+    return pileup_path, tmp_dir, model_name
 
 # returns a string of all the options for the script if the script was called with -h or --help
 def helpOption():
     s="-i --pileup_path:\tthe path to the pileup file to predict the Ct value of"
     s+="-t --tmp_dir:\tthe path to the temporary directory to be created by the script"
-    s+="-m --mat_path:\tthe path to the matrix created by createMat.py that the model was trained on"
     s+="-n --model_path:\tthe path to the pileup model to use to predict the Ct value"
     return s
 
@@ -92,7 +89,7 @@ def main(argv):
     start_dir = os.getcwd() # current directory
 
     # set parameters:
-    pileup_path, tmp_dir, mat_name, model_name  = parseParams(args, start_dir)
+    pileup_path, tmp_dir, model_name  = parseParams(args, start_dir)
     print("--predictCt.py-- set parameters")
 
     # creating the temporary directory to store the pileup file
@@ -104,22 +101,22 @@ def main(argv):
     os.system("python3 parsePileups.py -p " + tmp_dir + " -l " + tmp_dir + " -d None")
     os.system("python3 createMat.py -l " + tmp_dir + " -o " + tmp_dir + " -m " + arr_name)
 
-    mat = np.load(mat_name, allow_pickle=True)
-    r, c = mat.shape
+    # loading the model
+    model = pickle.load(open(model_name, "rb"))
+
+    # get the number of features in the model:
+    num_ft = model.n_features_in_ 
 
     # open array representing this pileup
     arr = (np.load((tmp_dir + arr_name), allow_pickle=True))[0]
-    this_row = evenLength(arr, c) # evening the length
+    this_row = evenLength(arr, num_ft) # evening the length
     print("--predictCt.py-- parsed pileup file")
 
     # removing the temporary directory:
     os.system("rm -r " + tmp_dir)
 
-    # loading the model
-    model = pickle.load(open(model_name, "rb"))
-
     # making prediction:
-    p = (model.predict(this_row))[0]
+    p = (model.predict(this_row.reshape(1, -1)))[0]
     print("--predictCt.py-- got prediction")
 
     # printing prediction:
