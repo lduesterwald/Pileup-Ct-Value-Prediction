@@ -208,7 +208,7 @@ def main():
         if (i != 4):
             s+=str(r2s[i]) + ", "
         else:
-            s+=str(rws[i]) + "]"
+            s+=str(r2s[i]) + "]"
     s+="\n\tRMSEs:  ["
     for i in range(len(rmses)):
         if (i != 4):
