@@ -216,7 +216,7 @@ def main():
         else:
             s+=str(rmses[i]) + "]"
     s+="\n\nAverages:\n\tR2: " + r2_ci + "\n\tRMSE: " + rmse_ci
-    f = open(out_file)
+    f = open(out_file, "a")
     f.write(s)
     f.close()
 
