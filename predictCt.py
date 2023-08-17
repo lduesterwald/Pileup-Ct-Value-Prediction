@@ -87,6 +87,9 @@ def evenLength(row, cols):
 def main(argv):
     args = sys.argv
     start_dir = os.getcwd() # current directory
+    script_path = os.path.dirname(os.path.realpath(argv[0])) # directory of the script
+    if (script_path.endswith("/") == False):
+        script_path+="/"
 
     # set parameters:
     pileup_path, tmp_dir, model_name  = parseParams(args, start_dir)
@@ -98,7 +101,7 @@ def main(argv):
 
     # parse the pileup file and create an array to represent the genome:
     arr_name = "this_row.npy"
-    os.system("python3 parsePileups.py -p " + tmp_dir + " -l " + tmp_dir + " -d None")
+    os.system("python3 " + script_path + "parsePileups.py -p " + tmp_dir + " -l " + tmp_dir + " -d None")
     os.system("python3 createMat.py -l " + tmp_dir + " -o " + tmp_dir + " -m " + arr_name)
 
     # loading the model
