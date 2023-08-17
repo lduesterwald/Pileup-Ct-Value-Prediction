@@ -102,7 +102,7 @@ def main(argv):
     # parse the pileup file and create an array to represent the genome:
     arr_name = "this_row.npy"
     os.system("python3 " + script_path + "parsePileups.py -p " + tmp_dir + " -l " + tmp_dir + " -d None")
-    os.system("python3 createMat.py -l " + tmp_dir + " -o " + tmp_dir + " -m " + arr_name)
+    os.system("python3 " + script_path + "createMat.py -l " + tmp_dir + " -o " + tmp_dir + " -m " + arr_name)
 
     # loading the model
     model = pickle.load(open(model_name, "rb"))
