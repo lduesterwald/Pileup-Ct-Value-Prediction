@@ -17,7 +17,7 @@ def parseParams(args, start_dir):
     pileup_path = "" # (-i)
     # setting default values for each parameter:
     tmp_dir = start_dir + "/tmp/" # (-t)
-    out_dir = start_dir + "/output/" # (-o) # the ouput directoru containing the matrix and model
+    out_dir = start_dir + "/output/" # (-o) # the ouput directory containing the matrix and model
     model_name = out_dir + "pileup_model.pkl" # (-n)
 
     for i in range(len(args)):
@@ -36,8 +36,7 @@ def parseParams(args, start_dir):
             out_dir = args[i + 1]
             if (out_dir.endswith("/") == False):
                 out_dir = out_dir + "/"
-            mat_path = out_dir + "pileup_matrix.npy"
-            model_path = out_dir + "pileup_model.pkl"
+            model_name = out_dir + "pileup_model.pkl"
         elif (args[i] == "-n" or args[i] == "--model_name"):
             model_name = out_dir + args[i + 1]
 
