@@ -219,41 +219,40 @@ def parseFile(pileup_dir, pileup_file, met, meta_file, lists_dir, genome_id):
         ct  = getInfo(meta_file, genome_id)
     else:
         ct = None # no metadata info
-    if (ct != None): # checking that the information for thi pileup was found
-        lst = []
-        for aline in fi:
-            vals = aline.split("\t")
 
-            if (len(vals) >= 5): #checking that the line has all the information needed
-                seq = vals[0] # the sequence
-                pos = int(vals[1]) # the nucleotide position
+    lst = []
+    for aline in fi:
+        vals = aline.split("\t")
 
-                if (isMasked(pos) == False): #checking whether the position was masked
-                    nuc = vals[2] # the nucleotide at the position
-                    dep = vals[3] # the read depth
-                    res = vals[4] # the read results
+        if (len(vals) >= 5): #checking that the line has all the information needed
+            seq = vals[0] # the sequence
+            pos = int(vals[1]) # the nucleotide position
 
-                    # parsing the read results, tup is a tuple of frequencies of [A, C, T, G, insertion, deletion] for this nucleotide position
-                    tup = parseResults(res, nuc)
+            if (isMasked(pos) == False): #checking whether the position was masked
+                nuc = vals[2] # the nucleotide at the position
+                dep = vals[3] # the read depth
+                res = vals[4] # the read results
 
-                    # adding -1 (the position was not in the pileup file) to the list so that the list indexes correspond correeclty to nucleotide positions
-                    diff = getPos(pos) - len(lst)
-                    for i in range(diff): # adding diff -1s  to the list so that the position is right
-                        lst.append(-1)
+                # parsing the read results, tup is a tuple of frequencies of [A, C, T, G, insertion, deletion] for this nucleotide position
+                tup = parseResults(res, nuc)
 
-                    # adding the tuple of frequencies to the list
-                    for item in tup:
-                        lst.append(item)
+                # adding -1 (the position was not in the pileup file) to the list so that the list indexes correspond correeclty to nucleotide positions
+                diff = getPos(pos) - len(lst)
+                for i in range(diff): # adding diff -1s  to the list so that the position is right
+                    lst.append(-1)
 
-        # add the Ct value at the beginning of the list
-        lst.insert(0, ct)
+                # adding the tuple of frequencies to the list
+                for item in tup:
+                    lst.append(item)
 
-        # storing the list in the output directory
-        out_f = (lists_dir + genome_id + ".pkl")
-        os.system("touch " + out_f)
-        f_opn = open(out_f, "wb")
-        pickle.dump(lst, (f_opn))
-        f_opn.close()
+    # add the Ct value at the beginning of the list
+    lst.insert(0, ct)
+    # storing the list in the output directory
+    out_f = (lists_dir + genome_id + ".pkl")
+    os.system("touch " + out_f)
+    f_opn = open(out_f, "wb")
+    pickle.dump(lst, (f_opn))
+    f_opn.close()
 
 # main functions
 # parses all the pileup files in a directory and stores the parsed results as lists
@@ -303,3 +302,4 @@ def main(argv):
 # if this is the script called by python, run main function
 if __name__ == '__main__':
     main(sys.argv)
+

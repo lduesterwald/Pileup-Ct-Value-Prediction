@@ -74,24 +74,25 @@ def makeArray(lists_dir):
 
     for filename in os.scandir(lists_dir):
         f = str(filename).strip("<DirEntry ' ''>")
-        genome_id = str(f).replace(".pkl", "")
+        if (f.endswith(".pkl")): # checking that the file has the right extension
+            genome_id = str(f).replace(".pkl", "")
 
-        fi = open((lists_dir + f), "rb")  # open the list
-        lst = pickle.load(fi)
+            fi = open((lists_dir + f), "rb")  # open the list
+            lst = pickle.load(fi)
 
-        if (len(lst) > max_len):
-            max_len = len(lst)
+            if (len(lst) > max_len):
+                max_len = len(lst)
 
-        # updating every 250 lists read
-        if (ind % 250 == 0):
-            print("\tread list: ", ind)
-        ind = ind + 1
+            # updating every 250 lists read
+            if (ind % 250 == 0):
+                print("\tread list: ", ind)
+            ind = ind + 1
 
-        # updating the metadata lists:
-        cts.append(lst[0])
-        # removing the Ct value from this list and adding it to the array
-        del lst[0]
-        arr.append(lst)
+            # updating the metadata lists:
+            cts.append(lst[0])
+            # removing the Ct value from this list and adding it to the array
+            del lst[0]
+            arr.append(lst)
 
     return cts, arr, max_len
 
