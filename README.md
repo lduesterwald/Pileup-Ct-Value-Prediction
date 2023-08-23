@@ -41,7 +41,7 @@ For efficient execution with a large number of pileup files, we recommend splitt
 
 An example run would be:
 ~~~
-python3 parsePileups.py -p <pileup_directory> -l <pileup_list_directory> -m <metadata_file_path>
+python3 parsePileups.py -p <pileup_directory> -l <pileup_list_directory> -d <metadata_file_path>
 ~~~
 
 This script takes in the following options:
