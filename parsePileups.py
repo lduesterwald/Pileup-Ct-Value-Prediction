@@ -277,8 +277,11 @@ def main(argv):
         # checking that the file is the right format
         if (f.endswith(".gz")):
             genome_id = f.replace(".gz", "")
-            pileup_file = genome_id + ".pileup"
-            # unzip the file
+   
+           if (genome_id.endswith(".pileup") == False):
+                pileup_file = genome_id + ".pileup"
+    
+           # unzip the file
             os.system("gzip -d " + (pileups_dir + f))
 
             parseFile(pileups_dir, pileup_file, met, meta_file, lists_dir, genome_id)
